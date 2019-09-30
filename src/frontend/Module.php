@@ -9,7 +9,7 @@ namespace johnnymcweed\event\frontend;
  * @author Alexander Schmid <alex.schmid@stud.unibas.ch>
  * @since 1.0.0
  */
-class Module extends \luya\admin\base\Module
+class Module extends \luya\base\Module
 {
     /**
      * If true, views will be looked up in the @app/views folder.

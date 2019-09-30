@@ -44,25 +44,26 @@ class DefaultController extends Controller
      * @param string $listType
      * @return string
      */
-    public function actionEvents($type = 'coming')
+    public function actionEvents($type = 'coming', $cat = '')
     {
         switch ($type) {
             case 'coming':
-                $query = Event::find()->andWhere(['is_deleted' => false])
-                    ->andWhere(['>=', 'event_start', time()]);
+                $query = Event::find()
+                    ->andWhere(['event_event.is_deleted' => false])
+                    ->andWhere(['>=', 'event_event.event_start', time()]);
                 $order = ['defaultOrder' => $this->module->comingEventDefaultOrder];
                 $pagination = ['defaultPageSize' => $this->module->comingEventDefaultPageSize];
                 break;
             case 'past':
-                $query = Event::find()->andWhere(['is_deleted' => false])
+                $query = Event::find()->andWhere(['event_event.is_deleted' => false])
                     ->andWhere(['<=', 'event_end', time()]);
                 $order = ['defaultOrder' => $this->module->pastEventDefaultOrder];
                 $pagination = ['defaultPageSize' => $this->module->pastEventDefaultPageSize];
                 break;
             case 'current':
-                $query = Event::find()->andWhere(['is_deleted' => false])
-                    ->andWhere(['<=', 'event_start', time()])
-                    ->andWhere(['>=', 'event_end', time()]);
+                $query = Event::find()->andWhere(['event_event.is_deleted' => false])
+                    ->andWhere(['<=', 'event_event.event_start', time()])
+                    ->andWhere(['>=', 'event_event.event_end', time()]);
                 $order = ['defaultOrder' => $this->module->currentEventDefaultOrder];
                 $pagination = ['defaultPageSize' => $this->module->currentEventDefaultPageSize];
                 break;
@@ -72,11 +73,17 @@ class DefaultController extends Controller
                 $pagination = ['defaultPageSize' => $this->module->allEventDefaultPageSize];
                 break;
         }
+
+        if(!empty($cat)){
+            $query->leftJoin('event_cat', 'event_event.cat_id = event_cat.id')
+                ->andWhere(['LIKE', 'event_cat.title', $cat]);
+        }
         $provider = new ActiveDataProvider([
             'query' => $query,
             'sort' => $order,
             'pagination' => $pagination
         ]);
+
         return $this->render('events', [
             'model' => Event::className(),
             'provider' => $provider

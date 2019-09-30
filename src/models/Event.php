@@ -259,4 +259,11 @@ class Event extends NgRestModel
         }
         return $events;
     }
+
+    public static function fieldStateDescriber()
+    {
+        return [
+            'event_event.is_deleted' => [true, false]
+        ];
+    }
 }
