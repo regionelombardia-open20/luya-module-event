@@ -44,7 +44,7 @@ class DefaultController extends Controller
      * @param string $listType
      * @return string
      */
-    public function actionEvents($type = 'coming', $cat = '')
+    public function actionEvents($type = 'coming', $cat = '', $view = 'events' )
     {
         switch ($type) {
             case 'coming':
@@ -84,7 +84,7 @@ class DefaultController extends Controller
             'pagination' => $pagination
         ]);
 
-        return $this->render('events', [
+        return $this->render($view, [
             'model' => Event::className(),
             'provider' => $provider
         ]);
